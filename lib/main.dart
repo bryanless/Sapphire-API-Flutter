@@ -22,6 +22,10 @@ class MyApp extends StatelessWidget {
           theme: DynamicTheme.lightTheme(lightColorScheme),
           darkTheme: DynamicTheme.darkTheme(darkColorScheme),
           home: const HomePage(),
+          routes: {
+            HomePage.routeName: (context) => const HomePage(),
+            VerifiedPage.routeName: (context) => const VerifiedPage(),
+          },
         );
       },
     );
