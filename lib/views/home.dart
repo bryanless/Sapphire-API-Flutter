@@ -11,15 +11,18 @@ class _HomePageState extends State<HomePage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
 
-  @override
-  void dispose() {
-    super.dispose();
-    emailController.dispose();
-  }
+  late bool responseStatus;
+  late String responseError;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
   }
 
   @override
@@ -71,14 +74,21 @@ class _HomePageState extends State<HomePage> {
             );
             await SapphireService.sendMail(emailController.text).then((value) {
               var result = jsonDecode(value.body);
-              print(result.toString());
+              responseStatus = result['status'];
+              if (!responseStatus) {
+                responseError = result['error'];
+              }
+            }).catchError((error) {
+              print(error);
             });
             if (!mounted) return;
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: const Text('Email has been sent'),
+                  content: responseStatus
+                      ? const Text("Email has been sent")
+                      : Text(responseError),
                   action: SnackBarAction(
                       label: 'Dismiss',
                       onPressed: () {
