@@ -9,6 +9,7 @@ class OutlinedTextField extends StatelessWidget {
     this.hintText,
     this.prefixIcon,
     this.keyboardType,
+    this.textCapitalization = TextCapitalization.none,
     this.autofocus = false,
     this.onSaved,
     this.validator,
@@ -22,6 +23,7 @@ class OutlinedTextField extends StatelessWidget {
   final String? hintText;
   final IconData? prefixIcon;
   final TextInputType? keyboardType;
+  final TextCapitalization textCapitalization;
   final bool autofocus;
   final Function(String?)? onSaved;
   final String? Function(String?)? validator;
@@ -40,6 +42,7 @@ class OutlinedTextField extends StatelessWidget {
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
       ),
       keyboardType: keyboardType,
+      textCapitalization: textCapitalization,
       autofocus: autofocus,
       onSaved: onSaved,
       validator: validator,

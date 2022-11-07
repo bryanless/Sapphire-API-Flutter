@@ -1,7 +1,12 @@
 part of 'widgets.dart';
 
 class FilledButton extends StatelessWidget {
-  const FilledButton({super.key, this.onPressed, this.icon, this.label});
+  const FilledButton({
+    super.key,
+    this.onPressed,
+    this.icon,
+    this.label,
+  });
 
   final void Function()? onPressed;
   final IconData? icon;

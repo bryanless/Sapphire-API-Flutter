@@ -28,9 +28,9 @@ class SapphireApiApp extends StatelessWidget {
           },
           onGenerateRoute: (settings) {
             switch (settings.name) {
-              case HomePage.routeName:
+              case EmailPage.routeName:
                 return PageTransition(
-                  child: const HomePage(),
+                  child: const EmailPage(),
                   type: PageTransitionType.rightToLeftJoined,
                   childCurrent: this,
                   settings: settings,
@@ -39,6 +39,7 @@ class SapphireApiApp extends StatelessWidget {
                 return null;
             }
           },
+          debugShowCheckedModeBanner: false,
         );
       },
     );

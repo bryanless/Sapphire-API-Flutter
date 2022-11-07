@@ -38,6 +38,7 @@ class _VerifiedPageState extends State<VerifiedPage> {
                     'assets/animations/lottie_verified.json',
                     height: 250,
                     fit: BoxFit.contain,
+                    frameRate: FrameRate(60),
                   ),
                   const VSpacer(space: 64),
                 ],

@@ -10,8 +10,84 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+  bool _initialURILinkHandled = false;
+  Uri? _initialURI;
+  Uri? _currentURI;
+  Object? _err;
+  StreamSubscription? _streamSubscription;
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
+
+  Future<void> _initURIHandler() async {
+    if (!_initialURILinkHandled) {
+      _initialURILinkHandled = true;
+      try {
+        final initialURI = await getInitialUri();
+        if (initialURI != null) {
+          debugPrint("Initial URI received $initialURI");
+          if (!mounted) {
+            return;
+          }
+          setState(() {
+            _initialURI = initialURI;
+          });
+        } else {
+          debugPrint("Null Initial URI received");
+        }
+      } on PlatformException {
+        debugPrint("Failed to receive initial uri");
+      } on FormatException catch (err) {
+        if (!mounted) {
+          return;
+        }
+        debugPrint('Malformed Initial URI received');
+        setState(() => _err = err);
+      }
+    }
+  }
+
+  void _incomingLinkHandler() {
+    if (!kIsWeb) {
+      _streamSubscription = uriLinkStream.listen((Uri? uri) {
+        if (!mounted) {
+          return;
+        }
+        debugPrint('Received URI: $uri');
+        setState(() {
+          _currentURI = uri;
+          _err = null;
+        });
+      }, onError: (Object err) {
+        if (!mounted) {
+          return;
+        }
+        debugPrint('Error occurred: $err');
+        setState(() {
+          _currentURI = null;
+          if (err is FormatException) {
+            _err = err;
+          } else {
+            _err = null;
+          }
+        });
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initURIHandler();
+    _incomingLinkHandler();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +122,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           controller: nameController,
                           prefixIcon: SapphireIcons.badge,
                           labelText: 'Name',
+                          textCapitalization: TextCapitalization.words,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your name';
@@ -61,16 +138,16 @@ class _WelcomePageState extends State<WelcomePage> {
                   const VSpacer(space: Space.large),
                   FilledButton(
                     label: 'Next',
-                    onPressed: () async {
+                    onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         Navigator.pushReplacementNamed(
                           context,
-                          HomePage.routeName,
-                          arguments: HomePageArguments(nameController.text),
+                          EmailPage.routeName,
+                          arguments: EmailPageArguments(nameController.text),
                         );
                       }
                     },
-                  )
+                  ),
                 ],
               ),
             ),
@@ -81,7 +158,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const HomePage(),
+    pageBuilder: (context, animation, secondaryAnimation) => const EmailPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return child;
     },

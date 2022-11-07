@@ -16,5 +16,5 @@ import 'package:uni_links/uni_links.dart';
 import '../widgets/widgets.dart';
 
 part 'welcome.dart';
-part 'home.dart';
+part 'email.dart';
 part 'verified.dart';
