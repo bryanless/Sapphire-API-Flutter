@@ -4,7 +4,7 @@ class DynamicTheme {
   static ThemeData lightTheme(ColorScheme? lightColorScheme) {
     ColorScheme scheme = lightColorScheme ??
         ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: const Color(0xFF536DFE),
         );
     return ThemeData(
       useMaterial3: true,
@@ -15,7 +15,7 @@ class DynamicTheme {
   static ThemeData darkTheme(ColorScheme? darkColorScheme) {
     ColorScheme scheme = darkColorScheme ??
         ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: const Color(0xFF536DFE),
           brightness: Brightness.dark,
         );
     return ThemeData(
