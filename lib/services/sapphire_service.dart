@@ -1,7 +1,7 @@
 part of 'services.dart';
 
 class SapphireService {
-  static Future<http.Response> sendMail(String email) {
+  static Future<http.Response> sendMail(String email, String name) {
     return http.post(
       Uri.https(Const.baseUrl, '/week5/api/student/sendmail'),
       headers: <String, String>{
@@ -12,6 +12,7 @@ class SapphireService {
       body: jsonEncode(
         <String, dynamic>{
           'email': email,
+          'name': name,
         },
       ),
     );

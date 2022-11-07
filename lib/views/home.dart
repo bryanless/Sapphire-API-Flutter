@@ -184,15 +184,18 @@ class _HomePageState extends State<HomePage> {
                           content: Text('Sending your email'),
                         ),
                       );
-                      await SapphireService.sendMail(emailController.text)
-                          .then((value) {
+                      await SapphireService.sendMail(
+                        emailController.text,
+                        args.name,
+                      ).then((value) {
                         var result = jsonDecode(value.body);
                         responseStatus = result['status'];
                         if (!responseStatus) {
+                          print(result.toString());
                           responseError = result['error'];
                         }
                       }).catchError((error) {
-                        print(error);
+                        debugPrint(error.toString());
                       });
                       if (!mounted) return;
                       changeEmailSent(true);
@@ -214,13 +217,6 @@ class _HomePageState extends State<HomePage> {
                     }
                   },
                 ),
-                FilledButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(
-                        context, VerifiedPage.routeName);
-                  },
-                  label: 'hola',
-                )
               ],
             ),
           ),
