@@ -11,7 +11,7 @@ class EmailPage extends StatefulWidget {
 
 class _EmailPageState extends State<EmailPage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   bool _isEmailSent = false;
   bool _isSendActive = false;
@@ -20,7 +20,7 @@ class _EmailPageState extends State<EmailPage> {
   String _responseError = "";
 
   void _checkSendStatus() {
-    String value = emailController.text;
+    String value = _emailController.text;
     _changeEmailSent(false);
     if (value.isEmpty || !EmailValidator.validate(value.toString())) {
       _changeSendButtonState(false);
@@ -44,12 +44,12 @@ class _EmailPageState extends State<EmailPage> {
   @override
   void initState() {
     super.initState();
-    emailController.addListener(_checkSendStatus);
+    _emailController.addListener(_checkSendStatus);
   }
 
   @override
   void dispose() {
-    emailController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -108,7 +108,7 @@ class _EmailPageState extends State<EmailPage> {
                   child: Column(
                     children: [
                       OutlinedTextField(
-                        controller: emailController,
+                        controller: _emailController,
                         labelText: 'Email',
                         prefixIcon: SapphireIcons.email,
                         keyboardType: TextInputType.emailAddress,
@@ -142,7 +142,7 @@ class _EmailPageState extends State<EmailPage> {
                             _changeSendButtonState(false);
                             // Send mail
                             await SapphireService.sendMail(
-                              emailController.text,
+                              _emailController.text,
                               args.name,
                             ).then((value) {
                               var result = jsonDecode(value.body);

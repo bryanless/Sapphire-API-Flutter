@@ -17,7 +17,9 @@ class _WelcomePageState extends State<WelcomePage> {
   StreamSubscription? _streamSubscription;
 
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+
+  bool _isNextActive = false;
 
   Future<void> _initURIHandler() async {
     if (!_initialURILinkHandled) {
@@ -75,16 +77,25 @@ class _WelcomePageState extends State<WelcomePage> {
     }
   }
 
+  void _changeNextButtonState() {
+    setState(
+      () {
+        _isNextActive = _nameController.text.isNotEmpty;
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _initURIHandler();
     _incomingLinkHandler();
+    _nameController.addListener(_changeNextButtonState);
   }
 
   @override
   void dispose() {
-    nameController.dispose();
+    _nameController.dispose();
     _streamSubscription?.cancel();
     super.dispose();
   }
@@ -119,7 +130,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     child: Column(
                       children: [
                         OutlinedTextField(
-                          controller: nameController,
+                          controller: _nameController,
                           prefixIcon: SapphireIcons.badge,
                           labelText: 'Name',
                           textCapitalization: TextCapitalization.words,
@@ -138,15 +149,18 @@ class _WelcomePageState extends State<WelcomePage> {
                   const VSpacer(space: Space.large),
                   FilledButton(
                     label: 'Next',
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          EmailPage.routeName,
-                          arguments: EmailPageArguments(nameController.text),
-                        );
-                      }
-                    },
+                    onPressed: _isNextActive
+                        ? () {
+                            if (_formKey.currentState!.validate()) {
+                              Navigator.pushNamed(
+                                context,
+                                EmailPage.routeName,
+                                arguments:
+                                    EmailPageArguments(_nameController.text),
+                              );
+                            }
+                          }
+                        : null,
                   ),
                 ],
               ),
